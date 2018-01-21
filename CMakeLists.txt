@@ -9,6 +9,7 @@ add_custom_target(CopyMedia
 
 include_directories(libs/spdlog-0.16.3/include)
 include_directories(libs/glad/include)
+include_directories(libs/stb/include)
 
 find_package(Boost 1.66.0 REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
@@ -23,7 +24,7 @@ if(MINGW)
             COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_SOURCE_DIR}/libs/sdl2/win/SDL2.dll ${CMAKE_BINARY_DIR}
     )
 
-    set(CUSTOM_SOURCE_FILES "utils/win_timer.cpp" gfx/common.h)
+    set(CUSTOM_SOURCE_FILES "utils/win_timer.cpp" gfx/common.h libs/stb/include/stb_image.h)
 endif()
 
 set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
