@@ -24,12 +24,12 @@ if(MINGW)
             COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_SOURCE_DIR}/libs/sdl2/win/SDL2.dll ${CMAKE_BINARY_DIR}
     )
 
-    set(CUSTOM_SOURCE_FILES "utils/win_timer.cpp" gfx/common.h libs/stb/include/stb_image.h)
+    set(CUSTOM_SOURCE_FILES "utils/win_timer.cpp")
 endif()
 
 set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 
-add_executable(pong main.cpp utils/log.h utils/common.h utils/file.h window.h window.cpp glad.c gfx/shader.h gfx/shader.cpp game.h utils/timer.h ${CUSTOM_SOURCE_FILES} game.cpp)
+add_executable(pong main.cpp utils/log.h utils/common.h utils/file.h window.h window.cpp glad.c gfx/shader.h gfx/shader.cpp game.h utils/timer.h gfx/common.h libs/stb/include/stb_image.h gfx/texture.h game.cpp gfx/texture.cpp ${CUSTOM_SOURCE_FILES})
 target_link_libraries(pong ${SDL2_LIBRARY})
 
 add_dependencies(pong CopyBinaries CopyMedia)

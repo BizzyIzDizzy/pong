@@ -1,8 +1,5 @@
 #include "game.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
-
 namespace pong{
 
     bool game::init_resources() {
@@ -57,10 +54,20 @@ namespace pong{
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
         glEnableVertexAttribArray(2);
 
-        // generate texture
-        glGenTextures(1, &texture);
-        glBindTexture(GL_TEXTURE_2D, texture);
+        // generate textures
+        texture1 = std::make_shared<gfx::texture>("media/container.jpg");
+        if(!texture1->loaded){
+            log->error("Failed to create the first texture!");
+            return false;
+        }
 
+        texture2 = std::make_shared<gfx::texture>("media/awesomeface.png", GL_RGBA);
+        if(!texture2->loaded){
+            log->error("Failed to create the second texture!");
+            return false;
+        }
+
+        texture1->use();
         // set the texture wrapping parameters
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -68,17 +75,18 @@ namespace pong{
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        int32_t width, height, number_of_channels;
-        auto data = stbi_load("media/container.jpg", &width, &height, &number_of_channels, 0);
-        if(data){
-            log->info("Loaded texture from file!");
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-            glGenerateMipmap(GL_TEXTURE_2D);
-        }else{
-            log->error("Failed to load texture from file '{}'!", "media/container.jpg");
-            return false;
-        }
-        stbi_image_free(data);
+        texture2->use();
+        // set the texture wrapping parameters
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        // set texture filtering parameters
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+
+        shader->use();
+        shader->set_int("texture1", 0);
+        shader->set_int("texture2", 1);
 
         // unbind VAO
         glBindVertexArray(0);
@@ -104,7 +112,10 @@ namespace pong{
         glClear(GL_COLOR_BUFFER_BIT);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture);
+        texture1->use();
+        glActiveTexture(GL_TEXTURE1);
+        texture2->use();
+
         shader->use();
 
         glBindVertexArray(vertex_array_object);
@@ -122,8 +133,9 @@ namespace pong{
         glUseProgram(0);
         shader->dispose();
 
-        // delete texture
-        glDeleteTextures(1, &texture);
+        // delete textures
+        texture1->dispose();
+        texture2->dispose();
 
         // call base cleanup method
         window::cleanup();
