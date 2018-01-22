@@ -2,6 +2,7 @@
 #include "../utils/log.h"
 #include "shader.h"
 #include <glad/glad.h>
+#include <ext.hpp>
 
 namespace gfx{
 
@@ -132,6 +133,10 @@ namespace gfx{
 
     void shader::set_float(const std::string &name, float value) const {
         glUniform1f(glGetUniformLocation(*id, name.c_str()), value);
+    }
+
+    void shader::set_mat4(const std::string &name, glm::mat4 matrix) const {
+        glUniformMatrix4fv(glGetUniformLocation(*id, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
     }
 
 }

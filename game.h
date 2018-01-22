@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <detail/type_mat4x4.hpp>
 
 #include "window.h"
 #include "utils/timer.h"
@@ -16,6 +17,7 @@ namespace pong{
         std::shared_ptr<gfx::shader> shader;
         std::shared_ptr<gfx::texture> texture1;
         std::shared_ptr<gfx::texture> texture2;
+        glm::mat4 transformation_matrix;
 
     protected:
         bool init_resources() override;

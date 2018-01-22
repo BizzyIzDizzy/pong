@@ -1,6 +1,7 @@
 #pragma once
 
 #include <optional>
+#include <detail/type_mat4x4.hpp>
 #include "../utils/common.h"
 
 namespace gfx{
@@ -17,5 +18,6 @@ namespace gfx{
         void set_bool(const std::string& name, bool value) const;
         void set_int(const std::string& name, int32_t value) const;
         void set_float(const std::string& name, float value) const;
+        void set_mat4(const std::string& name, glm::mat4 matrix) const;
     };
 }

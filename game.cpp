@@ -1,5 +1,9 @@
 #include "game.h"
 
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
+#include <gtc/type_ptr.hpp>
+
 namespace pong{
 
     bool game::init_resources() {
@@ -54,7 +58,7 @@ namespace pong{
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
         glEnableVertexAttribArray(2);
 
-        // generate textures
+        // generate texturesš
         texture1 = std::make_shared<gfx::texture>("media/container.jpg");
         if(!texture1->loaded){
             log->error("Failed to create the first texture!");
@@ -83,7 +87,6 @@ namespace pong{
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-
         shader->use();
         shader->set_int("texture1", 0);
         shader->set_int("texture2", 1);
@@ -106,6 +109,10 @@ namespace pong{
 
     void game::process_input() {
         timer->tick();
+
+        transformation_matrix = glm::mat4();
+        transformation_matrix = glm::translate(transformation_matrix, glm::vec3(0.5f, -0.5f, 0.0f));
+        transformation_matrix = glm::rotate(transformation_matrix, timer->get_time(), glm::vec3(0.0f, 0.0f, 1.0f));
     }
 
     void game::render() {
@@ -118,11 +125,14 @@ namespace pong{
 
         shader->use();
 
+        shader->set_mat4("transform", transformation_matrix);
+
         glBindVertexArray(vertex_array_object);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
         glUseProgram(0);
-        glBindVertexArray(0);    }
+        glBindVertexArray(0);
+    }
 
     void game::cleanup() {
         // delete VAO
