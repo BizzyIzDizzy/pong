@@ -10,6 +10,7 @@ add_custom_target(CopyMedia
 include_directories(libs/spdlog-0.16.3/include)
 include_directories(libs/glad/include)
 include_directories(libs/stb/include)
+include_directories(libs/glm)
 
 find_package(Boost 1.66.0 REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
