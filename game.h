@@ -17,7 +17,6 @@ namespace pong{
         std::shared_ptr<gfx::shader> shader;
         std::shared_ptr<gfx::texture> texture1;
         std::shared_ptr<gfx::texture> texture2;
-        glm::mat4 transformation_matrix;
 
     protected:
         bool init_resources() override;
